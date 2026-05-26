@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RoPA Register</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section id="loginView" class="login-view active">
+      <form id="loginForm" class="login-panel">
+        <div class="brand large">
+          <div class="brand-mark">R</div>
+          <div>
+            <strong>RoPA Register</strong>
+            <span>Division access control</span>
+          </div>
+        </div>
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" name="email" type="email" value="admin@example.com" required />
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" name="password" type="password" value="admin123" required />
+        <button class="primary" type="submit">เข้าสู่ระบบ</button>
+        <p id="loginError" class="form-error"></p>
+        <div class="login-help">
+          <strong>Demo accounts</strong>
+          <span>admin@example.com / admin123</span>
+          <span>editor.hr@example.com / editor123</span>
+          <span>viewer.it@example.com / viewer123</span>
+        </div>
+      </form>
+    </section>
+
+    <div id="appShell" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">R</div>
+          <div>
+            <strong>RoPA Register</strong>
+            <span>Record of Processing Activities</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <button class="nav-item active" data-view="list" type="button">ทะเบียนกิจกรรม</button>
+          <button class="nav-item" data-action="new" type="button">สร้าง Draft</button>
+          <button id="adminNav" class="nav-item hidden" data-view="admin" type="button">Admin</button>
+        </nav>
+        <div class="user-panel">
+          <strong id="currentUserName"></strong>
+          <span id="currentUserMeta"></span>
+          <button class="secondary dark" id="logoutButton" type="button">ออกจากระบบ</button>
+        </div>
+        <div class="status-panel">
+          <span>Activities</span>
+          <strong id="activityCount">0</strong>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section id="listView" class="view active">
+          <header class="page-header">
+            <div>
+              <h1>ทะเบียนกิจกรรมประมวลผลข้อมูล</h1>
+              <p id="scopeLabel">RoPA activity register</p>
+            </div>
+            <button id="newActivityButton" class="primary" data-action="new" type="button">สร้าง Draft</button>
+          </header>
+
+          <div class="toolbar">
+            <input id="searchInput" type="search" placeholder="ค้นหาชื่อกระบวนงาน ฝ่ายงาน หรือชุดข้อมูล" />
+            <select id="statusFilter" aria-label="กรองสถานะ">
+              <option value="">ทุกสถานะ</option>
+              <option value="Draft">Draft</option>
+              <option value="In Review">In Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>กระบวนงาน</th>
+                  <th>ฝ่ายงาน</th>
+                  <th>Division</th>
+                  <th>ชุดข้อมูล</th>
+                  <th>สถานะ</th>
+                  <th>แก้ไขล่าสุด</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="activityTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="formView" class="view">
+          <header class="page-header compact">
+            <div>
+              <h1 id="formTitle">สร้าง Draft</h1>
+              <p id="formMeta">RoPA activity form</p>
+            </div>
+            <div class="button-row">
+              <button class="secondary" data-action="back" type="button">กลับ</button>
+              <button class="primary" id="saveButton" type="button">บันทึก</button>
+            </div>
+          </header>
+
+          <form id="activityForm">
+            <div class="form-layout">
+              <div id="tabs" class="tabs" role="tablist"></div>
+              <div id="formFields" class="fields-panel"></div>
+            </div>
+          </form>
+        </section>
+
+        <section id="detailView" class="view">
+          <header class="page-header compact">
+            <div>
+              <h1 id="detailTitle">รายละเอียดกิจกรรม</h1>
+              <p id="detailMeta"></p>
+            </div>
+            <div class="button-row">
+              <button class="secondary" data-action="back" type="button">กลับ</button>
+              <button class="secondary" id="exportButton" type="button">Export JSON</button>
+              <button class="primary" id="editButton" type="button">แก้ไข</button>
+            </div>
+          </header>
+          <div id="detailContent" class="detail-grid"></div>
+        </section>
+
+        <section id="adminView" class="view">
+          <header class="page-header">
+            <div>
+              <h1>Admin</h1>
+              <p>สร้าง user และกำหนด role, division, permission</p>
+            </div>
+          </header>
+
+          <div class="admin-layout">
+            <form id="userForm" class="fields-panel">
+              <h2 id="userFormTitle">สร้าง User</h2>
+              <input type="hidden" id="userId" name="id" />
+              <div class="field-grid">
+                <div class="field">
+                  <label for="userName">ชื่อ</label>
+                  <input id="userName" name="name" required />
+                </div>
+                <div class="field">
+                  <label for="userEmail">Email</label>
+                  <input id="userEmail" name="email" type="email" required />
+                </div>
+                <div class="field">
+                  <label for="userPassword">Password</label>
+                  <input id="userPassword" name="password" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="userDivision">Division</label>
+                  <input id="userDivision" name="division" list="divisionList" required />
+                  <datalist id="divisionList"></datalist>
+                </div>
+                <div class="field">
+                  <label for="userRole">Role</label>
+                  <select id="userRole" name="role" required>
+                    <option value="Admin">Admin</option>
+                    <option value="Editor">Editor</option>
+                    <option value="Viewer">Viewer</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="userActive">สถานะ</label>
+                  <select id="userActive" name="active">
+                    <option value="true">Active</option>
+                    <option value="false">Disabled</option>
+                  </select>
+                </div>
+                <div class="field full permission-grid">
+                  <label>Permissions</label>
+                  <label><input type="checkbox" name="permissions" value="create_activity" /> Create activity</label>
+                  <label><input type="checkbox" name="permissions" value="edit_activity" /> Edit activity</label>
+                  <label><input type="checkbox" name="permissions" value="view_activity" /> View activity</label>
+                  <label><input type="checkbox" name="permissions" value="manage_users" /> Manage users</label>
+                  <label><input type="checkbox" name="permissions" value="view_all_divisions" /> View all divisions</label>
+                </div>
+              </div>
+              <div class="button-row form-actions">
+                <button class="secondary" id="resetUserForm" type="button">ล้างฟอร์ม</button>
+                <button class="primary" type="submit">บันทึก User</button>
+              </div>
+            </form>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Division</th>
+                    <th>Role</th>
+                    <th>Permissions</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="userTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
